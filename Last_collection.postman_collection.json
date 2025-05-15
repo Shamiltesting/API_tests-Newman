@@ -1,0 +1,982 @@
+{
+	"info": {
+		"_postman_id": "65677a68-ab8e-4ea6-8393-4aba2b15eea1",
+		"name": "Last_collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13744071"
+	},
+	"item": [
+		{
+			"name": "Newman",
+			"item": [
+				{
+					"name": "SignUp",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"randomName = pm.variables.replaceIn('{{$randomFirstName}}');\r",
+									"pm.environment.set('randomName', randomName);\r",
+									"\r",
+									"\r",
+									"randomLastName = pm.variables.replaceIn('{{$randomLastName}}');\r",
+									"pm.environment.set('randomLastName', randomLastName);\r",
+									"\r",
+									"\r",
+									"randomEmail = pm.variables.replaceIn('{{$randomEmail}}');\r",
+									"pm.environment.set('randomEmail', randomEmail);\r",
+									"\r",
+									"\r",
+									"randomPassword = pm.variables.replaceIn('{{$randomPassword}}');\r",
+									"pm.environment.set('randomPassword', randomPassword);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Вынесем \"userId\" в переменные окружения для дальнейших запросов:\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.environment.set('userId', jsonData.data.userId);\r",
+									"\r",
+									"\r",
+									"pm.test(\"Status code is 201\", function () {\r",
+									"    pm.response.to.have.status(201);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Status should be \\\"Created\\\"\", function () {   \r",
+									"    pm.response.to.have.status(\"Created\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//Добавляем схему:\r",
+									"/*\r",
+									"{\r",
+									"  \"status\": \"ok\",\r",
+									"  \"data\": {\r",
+									"    \"userId\": 1,\r",
+									"    \"distanceUnits\": \"km\",\r",
+									"    \"currency\": \"usd\"\r",
+									"  }\r",
+									"}\r",
+									"*/\r",
+									"var schema = {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"status\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"data\": {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"userId\": {\r",
+									"            \"type\": \"integer\"\r",
+									"        },\r",
+									"        \"distanceUnits\": {\r",
+									"            \"type\": \"string\"\r",
+									"      },\r",
+									"        \"currency\": {\r",
+									"            \"type\": \"string\"\r",
+									"        }\r",
+									"    }, \r",
+									"      \"additionalProperties\": true,\r",
+									"      \"required\": [\r",
+									"        \"userId\",\r",
+									"        \"distanceUnits\",\r",
+									"        \"currency\"\r",
+									"      ]\r",
+									"    },\r",
+									"  \"additionalProperties\": true,\r",
+									"  \"required\": [\r",
+									"    \"status\",\r",
+									"    \"data\"\r",
+									"  ]\r",
+									"  }\r",
+									"}\r",
+									"\r",
+									"\r",
+									"pm.test('Schema is valid', function () {\r",
+									"    pm.expect(tv4.validate(pm.response.json(), schema)).to.be.true;\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//Тут будем делать проверку значений переменных:\r",
+									"var jsonData = pm.response.json();\r",
+									"pm.test(\"Is \\\"status\\\" correct\", function () { \r",
+									"    pm.expect(jsonData.status).to.eql(\"ok\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Is \\\"userId\\\" correct\", function () { \r",
+									"    pm.expect(jsonData.data.userId).to.eql.toString(pm.variables.get(\"userId\"));\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Is \\\"distanceUnits\\\" correct\", function () {\r",
+									"    pm.expect(jsonData.data.distanceUnits).to.eql(\"km\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Is \\\"currency\\\" correct\", function () {\r",
+									"    pm.expect(jsonData.data.currency).to.eql(\"usd\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//Тут будем делать проверку хэдэров ответа\r",
+									"/* Эти заголовки должны присутсвовать в респонсе: \r",
+									" access-control-allow-credentials: true \r",
+									" access-control-allow-origin: https://qauto.forstudy.space \r",
+									" content-length: 50 \r",
+									" content-type: application/json; charset=utf-8 \r",
+									" date: Tue,17 Dec 2024 13:15:51 GMT \r",
+									" etag: W/\"32-zUMsw8Wmrc4unhvcGSJ5KlVg2k0\" \r",
+									" server: nginx/1.18.0 (Ubuntu) \r",
+									" vary: Origin \r",
+									" x-powered-by: Express */\r",
+									"pm.test(\"Is \\\"access-control-allow-credentials\\\" present\", function () {\r",
+									"    pm.response.to.have.header(\"access-control-allow-credentials\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Is \\\"content-length\\\" present\", function () {\r",
+									"    pm.response.to.have.header(\"content-length\"); \r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Is \\\"content-type\\\" present\", function () {\r",
+									"    pm.response.to.have.header(\"content-type\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Is \\\"date\\\" present\", function () {\r",
+									"    pm.response.to.have.header(\"date\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Is \\\"etag\\\" present\", function () {\r",
+									"    pm.response.to.have.header(\"etag\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Is \\\"server\\\" present\", function () {\r",
+									"    pm.response.to.have.header(\"server\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"pm.test(\"Is \\\"x-powered-by\\\" present\", function () {\r",
+									"    pm.response.to.have.header(\"x-powered-by\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"name\": \"{{randomName}}\",\r\n  \"lastName\": \"{{randomLastName}}\",//не валидирует фамилии с апостровом\r\n  \"email\": \"{{randomEmail}}\",\r\n  \"password\": \"{{randomPassword}}\",//интегрировать пароль, в котором есть большая, маленькая буква и цифра, кол-во значений должно быть 8-15\r\n  \"repeatPassword\": \"{{randomPassword}}\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/signup",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"signup"
+							]
+						}
+					},
+					"response": [
+						{
+							"name": "201 Created",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"\",\r\n  \"lastName\": \"\",//не валидирует фамилии с апостровом\r\n  \"email\": \"\",\r\n  \"password\": \"\",//интегрировать пароль, в котором есть большая, маленькая буква и цифра, кол-во значений должно быть 8-15\r\n  \"repeatPassword\": \"\"\r\n}\r\n",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://2f1f3f1e-f2a0-4a4a-b830-46ed3354d98a.mock.pstmn.io/auth/signup",
+									"protocol": "https",
+									"host": [
+										"2f1f3f1e-f2a0-4a4a-b830-46ed3354d98a",
+										"mock",
+										"pstmn",
+										"io"
+									],
+									"path": [
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"status": "Created",
+							"code": 201,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "content-length",
+									"value": "50",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "date",
+									"value": "Tue,29 Apr 2025 11:46:30 GMT",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "etag",
+									"value": "W/\"32-zUMsw8Wmrc4unhvcGSJ5KlVg2k0\"",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "server",
+									"value": "nginx/1.18.0 (Ubuntu)",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "vary",
+									"value": "Origin",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "x-powered-by",
+									"value": "Express",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"ok\",\n    \"data\": {\n        \"userId\": 1,\n        \"distanceUnits\": \"km\",\n        \"currency\": \"usd\"\n    }\n}"
+						},
+						{
+							"name": "400 Bad Request",
+							"originalRequest": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"name\": \"\",\r\n  \"lastName\": \"{{randomLastName}}\",//не валидирует фамилии с апостровом\r\n  \"email\": \"{{randomEmail}}\",\r\n  \"password\": \"{{randomPassword}}\",//интегрировать пароль, в котором есть большая, маленькая буква и цифра, кол-во значений должно быть 8-15\r\n  \"repeatPassword\": \"{{randomPassword}}\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "https://2f1f3f1e-f2a0-4a4a-b830-46ed3354d98a.mock.pstmn.io/auth/signup",
+									"protocol": "https",
+									"host": [
+										"2f1f3f1e-f2a0-4a4a-b830-46ed3354d98a",
+										"mock",
+										"pstmn",
+										"io"
+									],
+									"path": [
+										"auth",
+										"signup"
+									]
+								}
+							},
+							"status": "Bad Request",
+							"code": 400,
+							"_postman_previewlanguage": "json",
+							"header": [
+								{
+									"key": "access-control-allow-credentials",
+									"value": "true",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "content-length",
+									"value": "50",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "Content-Type",
+									"value": "application/json",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "date",
+									"value": "Tue,29 Apr 2025 11:46:30 GMT",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "server",
+									"value": "nginx/1.18.0 (Ubuntu)",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "vary",
+									"value": "Origin",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "x-powered-by",
+									"value": "Express",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "Connection",
+									"value": "keek-alive",
+									"description": "",
+									"type": "text"
+								},
+								{
+									"key": "etag",
+									"value": "W/\"32-zUMsw8Wmrc4unhvcGSJ5KlVg2k0\"",
+									"description": "",
+									"type": "text"
+								}
+							],
+							"cookie": [],
+							"body": "{\n    \"status\": \"error\",\n    \"message\": \"\\\"name\\\" is not allowed to be empty\"\n}"
+						}
+					]
+				},
+				{
+					"name": "SignIn",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {",
+									"    pm.response.to.have.status(200);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Status should be \\\"OK\\\"\", function () {   ",
+									"    pm.response.to.have.status(\"OK\");",
+									"});",
+									"",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Is \\\"userId\\\" correct\", function () {",
+									"    pm.expect(jsonData.data.userId).to.eql(pm.variables.get(\"userId\"));",
+									"});",
+									"",
+									"",
+									"",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"{{randomEmail}}\",\n  \"password\": \"{{randomPassword}}\",\n  \"remember\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/auth/signin",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"auth",
+								"signin"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Me",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"packages": {},
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/users/current",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"users",
+								"current"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ChangeData",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"/*randomInt = pm.variables.replaceIn('{{$randomInt}}');",
+									"pm.environment.set('randomInt', randomInt);*/",
+									"",
+									"/*randomBoolean = pm.variables.replaceIn('{{$randomBoolean}}');",
+									"pm.environment.set('randomBoolean', randomBoolean);*/",
+									"",
+									"rndImage = pm.variables.replaceIn('{{$randomAvatarImage}}')",
+									"pm.environment.set(\"rndImage\", rndImage);",
+									"",
+									"",
+									"randomName = pm.variables.replaceIn('{{$randomFirstName}}');",
+									"pm.environment.set('randomName', randomName);",
+									"",
+									"",
+									"randomLastName = pm.variables.replaceIn('{{$randomLastName}}');",
+									"pm.environment.set('randomLastName', randomLastName);",
+									"",
+									"",
+									"randomDateBirth = pm.environment.replaceIn('{{$isoTimestamp}}')",
+									"pm.environment.set(\"randomDateBirth\", randomDateBirth);",
+									"",
+									"",
+									"randomCountry = pm.environment.replaceIn('{{$randomCountry}}')",
+									"pm.environment.set(\"randomCountry\", randomCountry);",
+									"",
+									"",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Добавляем схему: ",
+									"/*{",
+									"  \"status\": \"ok\",",
+									"  \"data\": {",
+									"    \"userId\": 33,",
+									"    \"photoFilename\": \"user-1621352948859.jpg\",",
+									"    \"name\": \"John\",",
+									"    \"lastName\": \"Dou\",",
+									"    \"dateBirth\": \"2021-03-17T15:21:05.000Z\",",
+									"    \"country\": \"Ukraine\"",
+									"  }",
+									"}*/",
+									"",
+									"var jsonData = pm.response.json();",
+									"var schema = {",
+									"  \"type\": \"object\",",
+									"  \"properties\": {",
+									"    \"status\": {",
+									"      \"type\": \"string\"",
+									"    },",
+									"    \"data\": {",
+									"      \"type\": \"object\",",
+									"      \"properties\": {",
+									"        \"userId\": {",
+									"            \"type\": \"integer\"",
+									"        },",
+									"        \"photoFilename\": {",
+									"            \"type\": \"string\"",
+									"      },",
+									"        \"name\": {",
+									"            \"type\": \"string\"",
+									"        },",
+									"        \"lastName\": {",
+									"            \"type\": \"string\"",
+									"        },",
+									"        \"dateBirth\": {",
+									"            \"type\": \"string\"",
+									"        },",
+									"        \"country\": {",
+									"            \"type\": \"string\"",
+									"        }                              ",
+									"    }, ",
+									"      \"additionalProperties\": true,",
+									"      \"required\": [",
+									"        \"userId\",",
+									"        \"photoFilename\",",
+									"        \"name\",",
+									"        \"lastName\",",
+									"        \"dateBirth\",",
+									"        \"country\"",
+									"      ]",
+									"    },",
+									"  \"additionalProperties\": true,",
+									"  \"required\": [",
+									"    \"status\",",
+									"    \"data\"",
+									"  ]",
+									"  }",
+									"}",
+									"",
+									"pm.test('Schema is valid', function () {",
+									"    pm.expect(tv4.validate(pm.response.json(), schema)).to.be.true;",
+									"});",
+									"",
+									"",
+									"//Проверка месседжа в респонсе",
+									"//Позитивный кейс:",
+									"var jsonData = pm.response.json();",
+									"let name = pm.environment.get('randomName', randomName);",
+									"pm.test(\"If \\\"name \\\" data type is correct the \\\"ok\\\"\", function () { ",
+									"    if(pm.expect(jsonData.data.name).to.be.eql(name)) {",
+									"        pm.expect(jsonData.status).to.equal(\"ok\");",
+									"    } ",
+									"});",
+									"",
+									"//Негативный кейс:",
+									"pm.test(\"If \\\"name \\\" data type ins't correct the error happens\", function () { ",
+									"    if(pm.expect(jsonData.data.name).to.be.eql(\"\")) {",
+									"        pm.expect(jsonData.message).to.equal(\"Cannot read property 'mime' of undefined\");",
+									"    } ",
+									"});",
+									"",
+									"//Тесты на проверку корректности сooбщений об ошибке",
+									"/*var jsonData = pm.response.json();",
+									"pm.test(\"Checking that error message is coorect\", function () {",
+									"    pm.expect(jsonData.message).to.eql(\"Cannot read property 'mime' of undefined\")",
+									"};*/",
+									"",
+									"",
+									"//Проверка измененных значений в теле респонса",
+									"",
+									"/*var jsonData = pm.response.json();",
+									"pm.test(\"Is \\\"status\\\" correct\", function () {",
+									"    pm.expect(jsonData.status).to.eql(\"ok\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Is \\\"name\\\" correct\", function () {",
+									"    pm.expect(jsonData.data.name).to.eql(pm.variables.get(\"randomName\"));",
+									"});",
+									"",
+									"",
+									"pm.test(\"Is \\\"lastName\\\" correct\", function () {",
+									"    pm.expect(jsonData.data.lastName).to.eql(pm.variables.get(\"randomLastName\"));",
+									"});*/",
+									"",
+									"",
+									"/*pm.test(\"Is \\\"dateBirth\\\" correct\", function () {",
+									"    pm.expect(jsonData.data.dateBirth).to.eql.toString(pm.variables.get(\"randomDateBirth\"));",
+									"});*/",
+									"/*Строка кода \"toString\" в тестах Postman используется для приведения данных",
+									"к строковому типу,  чтобы обеспечить корректное сравнение значений. В данном",
+									"случае \"toString\" приводит значение переменной randomDateBirth к строке, чтобы",
+									"гарантировать корректное сравнение.*/",
+									"",
+									"",
+									"/*pm.test(\"Is \\\"country\\\" correct\", function () {",
+									"    pm.expect(jsonData.data.country).to.eql(pm.variables.get(\"randomCountry\"));",
+									"});*/"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"photo\": \"{{rndImage}}\",\n  \"name\": \"{{randomName}}\",\n  \"lastName\": \"{{randomLastName}}\",\n  \"dateBirth\": \"{{randomDateBirth}}\",\n  \"country\": \"{{randomCountry}}\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/users/profile",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"users",
+								"profile"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Gets car brands",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/cars/brands",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"cars",
+								"brands"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Gets car models",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/cars/models",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"cars",
+								"models"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Creates new car",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Check title of brand car\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"BMW\");",
+									"});",
+									"",
+									"",
+									"pm.test(\"Check title of model car\", function () {",
+									"    pm.expect(pm.response.text()).to.include(\"X5\");",
+									"});",
+									"",
+									"",
+									"var jsonData = pm.response.json();",
+									"pm.test(\"Is car brand correct\", function () {",
+									"    pm.expect(jsonData.data.carBrandId).to.eql(2);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Is car model correct\", function () {",
+									"    pm.expect(jsonData.data.carModelId).to.eql(8);",
+									"});",
+									"",
+									"",
+									"/*Вынесем значение переменной \"carId\" в переменные окружения ",
+									"для дальнейшего использования его в запросах */",
+									"carId = pm.variables.replaceIn(jsonData.data.id);",
+									"pm.environment.set('carId', carId);",
+									"",
+									"/*Вынесем значение переменной \"carCreatedAt\" в переменные окружения ",
+									"для дальнейшего использования его в запросах */",
+									"carCreatedAt = pm.variables.replaceIn(jsonData.data.carCreatedAt)",
+									"pm.environment.set('carCreatedAt', carCreatedAt);",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"randomMileage = pm.variables.replaceIn('{{$randomInt}}');",
+									"pm.environment.set(\"randomMileage\", randomMileage);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"carBrandId\": 2,\n  \"carModelId\": 8,\n  \"mileage\": {{randomMileage}}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/cars",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"cars"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Gets current user cars",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/cars",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"cars"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Creates an expense",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"//Этот код используем при первом изменении \"mileage\"(при первом запросе)",
+									"let mileage = pm.environment.get(\"randomMileage\");",
+									"let updatedMilege = parseInt(mileage, 10) + 5;",
+									"pm.environment.set(\"updatedMilege\", updatedMilege);",
+									"",
+									"",
+									"//Это код используем, когда уже меняли \"mileage\" ",
+									"/*let mileage = pm.environment.get(\"updatedMilege\");",
+									"let updatedMilege2 = parseInt(mileage, 10) + 5;",
+									"pm.environment.set(\"updatedMilege2\", updatedMilege2);*/",
+									"",
+									"//Когда меняем Mileage 3й раз и более",
+									"/*let mileage = pm.environment.get(\"updatedMilege2\");",
+									"let updatedMilege2 = parseInt(mileage, 10) + 5;",
+									"pm.environment.set(\"updatedMilege2\", updatedMilege2);*/",
+									"",
+									"",
+									"//Код связанный с датами carCreatedAt/reportedAt",
+									"/*let createdAt = pm.environment.get('carCreatedAt');",
+									"let createdAtDate = new Date(createdAt);",
+									"let now = new Date();",
+									"",
+									"",
+									"let reportedAt;",
+									"if (now > createdAt) {",
+									"    console.log('Using current date: ', now.toISOString());",
+									"    reportedAt = now;",
+									"}",
+									"else {",
+									"    console.log('Using saved date: ', createdAt.toISOString());",
+									"    reportedAt = createdAtDate;",
+									"}",
+									"",
+									"pm.environment.set('reportedAt', reportedAt.toISOString()); */",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"var jsonData = pm.response.json();",
+									"//Переносим \"expensesId\" в переменные окружения ",
+									"expensesId = pm.response.json();",
+									"pm.environment.set('expensesId', expensesId.data.id);",
+									"",
+									"//Сравниваем mileage при создании с первый раз измененным mileage",
+									"const randomMileage = Number(pm.variables.get('randomMileage'));//тут мы перевели тип данных переменной окружения 'randomMileage' c string в number. ",
+									"pm.test(\"Is \\\"changedMileage\\\" is more than mileage of created car\", function () {",
+									"    pm.expect(jsonData.data.mileage).to.be.above(randomMileage);",
+									"});",
+									"",
+									"//ПОСЛЕ ТОГО КАК МЫ СРАВНИЛИ \"mileage ПРИ СОЗДАНИИ МАШИНЫ\" C ИЗМЕНЕННЫМ, МЫ СРАВНИВАЕМ \"НОВЫЙ-ИЗМЕННЕНЫЙ\" С \"СТАРЫМ-ИЗМЕННЕНЫМ\" mileage",
+									"//Сравниваем измененный mileage с повторно измененным mileage.ВАЖНО: ПРИ ПОВТОРНОМ ЗАПРОСЕ, ТЕСТ БУДЕТ ПАДАТЬ",
+									"/*const randomMileage = Number(pm.variables.get('updatedMilege'));//тут мы перевели тип данных переменной окружения 'updatedMilege' c string в number. ",
+									"pm.test(\"Is \\\"secondTimeChangedMileage\\\" is more than \\\"previousChangedMileage\\\"\", function () {",
+									"    pm.expect(jsonData.data.mileage).to.be.above(randomMileage);",
+									"});*/",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"carId\": {{carId}},\n  \"reportedAt\": \"{{carCreatedAt}}\",\n  \"mileage\": {{updatedMilege}},\n  \"liters\": 20,\n  \"totalCost\": 60,\n  \"forceMileage\": false\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/expenses",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"expenses"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Gets an expense by id",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/expenses/{{expensesId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"expenses",
+								"{{expensesId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deletes existing car Copy",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{URL}}/cars/{{carId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"cars",
+								"{{carId}}"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
